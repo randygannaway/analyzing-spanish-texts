@@ -1,5 +1,7 @@
 library(zipfR)
 
+# Create a directory of tfl files given a directory of plain text files
+
 createTfls <- function(directoryName){
   files_v <- dir(path=directoryName, pattern="*") 
   for(i in 1:length(files_v)){
@@ -11,6 +13,8 @@ createTfls <- function(directoryName){
   }
 }
 
+# Compare the vocabulary growth curves of two tfl files given their file paths
+
 compareVgc <- function(a_path, b_path){
   library(zipfR)
   a_tfl <- read.tfl(a_path)
@@ -19,14 +23,13 @@ compareVgc <- function(a_path, b_path){
   a_spc <- tfl2spc(a_tfl)
   b.fzm <- lnre("fzm", b_spc, exact=FALSE)
   a.fzm <- lnre("fzm", a_spc, exact=FALSE)
-  #a.fzm.vgc <- lnre.vgc(a.fzm, (1:100) * 230000, variances=TRUE)
   a.fzm.vgc <- lnre.vgc(a.fzm, (1:230000), variances=TRUE)
   b.fzm.vgc <- lnre.vgc(b.fzm, (1:230000), variances=TRUE)
   comparisonList <- list("a" = a.fzm.vgc, "b" = b.fzm.vgc)
   return(comparisonList)
 }
 
-## Takes a directory of TFL files
+# Produce a list of vocabulary growth objects for all files from a directory of TFL files
 compareFzmDir <- function(directoryName){
   comparisonList <- list()
   files_v <- dir(path=directoryName, pattern="*") 
@@ -43,6 +46,8 @@ compareFzmDir <- function(directoryName){
   return(comparisonList)
 }
 
+# Poduce a list of vocabulary spectrums from a directory of tfl files
+
 compareSpcDir <- function(directoryName){
   comparisonList <- list()
   files_v <- dir(path=directoryName, pattern="*") 
@@ -57,6 +62,8 @@ compareSpcDir <- function(directoryName){
   return(comparisonList)
 }
 
+# From a directory of plain text files, get the ratio of words used only once to total words
+
 hapaxRatio <- function(directoryName){
   spcList <- compareSpcDir(directoryName)
   hapaxRatioDf <- data.frame(Hapax=as.numeric(), Total=as.numeric())
@@ -66,6 +73,8 @@ hapaxRatio <- function(directoryName){
   rownames(hapaxRatioDf) <- names(spcList)
   return(hapaxRatioDf)
 }
+
+
 
 compareVgcDir <- function(directoryName, chunk_size = 500){
   comparisonList <- list()
